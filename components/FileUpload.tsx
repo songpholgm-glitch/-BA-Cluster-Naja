@@ -20,7 +20,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onDataProcessed }) => {
         try {
           const rawData = results.data as Record<string, any>[];
           if (rawData.length === 0) {
-            throw new Error("CSV file is empty");
+            throw new Error("ไฟล์ CSV ว่างเปล่า");
           }
 
           // Heuristic to find columns
@@ -33,7 +33,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onDataProcessed }) => {
           );
 
           if (!amountKey) {
-            throw new Error(`Could not identify an 'Amount' column. Found columns: ${keys.join(', ')}`);
+            throw new Error(`ไม่พบคอลัมน์ยอดเงิน (Amount) คอลัมน์ที่พบคือ: ${keys.join(', ')}`);
           }
 
           // Aggregate Data
@@ -72,11 +72,11 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onDataProcessed }) => {
 
           onDataProcessed(processedData);
         } catch (err: any) {
-          setError(err.message || "Failed to parse CSV");
+          setError(err.message || "เกิดข้อผิดพลาดในการอ่านไฟล์ CSV");
         }
       },
       error: (err) => {
-        setError(err.message);
+        setError(`ไม่สามารถอ่านไฟล์ได้: ${err.message}`);
       }
     });
   };
@@ -88,7 +88,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onDataProcessed }) => {
     if (file && file.type === 'text/csv') {
       processCSV(file);
     } else {
-      setError("Please upload a valid CSV file.");
+      setError("กรุณาอัปโหลดไฟล์ CSV เท่านั้น");
     }
   };
 
@@ -117,11 +117,11 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onDataProcessed }) => {
         />
         <label htmlFor="csv-upload" className="cursor-pointer flex flex-col items-center justify-center">
           <Upload className={`w-12 h-12 mb-4 ${isDragging ? 'text-blue-500' : 'text-gray-400'}`} />
-          <p className="text-xl font-medium text-gray-700">Drop your CSV here</p>
-          <p className="text-sm text-gray-500 mt-2">or click to browse (e.g., H_ZCSR181H_Cleaned.csv)</p>
+          <p className="text-xl font-medium text-gray-700">ลากไฟล์ CSV มาวางที่นี่</p>
+          <p className="text-sm text-gray-500 mt-2">หรือคลิกเพื่อเลือกไฟล์ (เช่น H_ZCSR181H_Cleaned.csv)</p>
           <div className="mt-4 flex items-center gap-2 text-xs text-gray-400 bg-gray-50 px-3 py-1 rounded-full">
             <FileText className="w-3 h-3" />
-            <span>Supports standard CSV format</span>
+            <span>รองรับรูปแบบ CSV มาตรฐาน</span>
           </div>
         </label>
       </div>

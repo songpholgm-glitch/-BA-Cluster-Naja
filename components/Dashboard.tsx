@@ -15,7 +15,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, analysis }) => {
     const clusterDef = analysis.clusters.find(c => c.name === assignment?.clusterName);
     return {
       ...item,
-      clusterName: assignment?.clusterName || 'Unassigned',
+      clusterName: assignment?.clusterName || 'ไม่ระบุกลุ่ม',
       clusterColor: clusterDef?.color || '#cccccc'
     };
   });
@@ -43,13 +43,13 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, analysis }) => {
             <div className="flex justify-between items-start mb-3">
               <h3 className="font-bold text-lg text-gray-800">{cluster.name}</h3>
               <span className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full font-mono">
-                {cluster.count} BAs
+                {cluster.count} ราย
               </span>
             </div>
             <p className="text-sm text-gray-600 mb-4 leading-relaxed">{cluster.description}</p>
             <div className="flex items-center gap-2 text-sm font-medium text-gray-500">
               <TrendingUp className="w-4 h-4" />
-              <span>Avg. Spend: ฿{cluster.avgTotalSpend.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+              <span>ยอดเฉลี่ย: ฿{cluster.avgTotalSpend.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
             </div>
           </div>
         ))}
@@ -62,25 +62,25 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, analysis }) => {
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
           <div className="flex items-center gap-2 mb-6">
             <Target className="w-5 h-5 text-blue-600" />
-            <h3 className="text-lg font-semibold text-gray-800">Distribution Analysis</h3>
+            <h3 className="text-lg font-semibold text-gray-800">การวิเคราะห์การกระจายตัว (Distribution)</h3>
           </div>
           <div className="h-80">
             <ResponsiveContainer width="100%" height="100%">
               <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <XAxis type="number" dataKey="transactionCount" name="Transactions" unit="" label={{ value: 'Transactions', position: 'bottom', offset: 0 }} />
-                <YAxis type="number" dataKey="totalAmount" name="Total Spend" unit="฿" label={{ value: 'Total Spend', angle: -90, position: 'insideLeft' }} />
+                <XAxis type="number" dataKey="transactionCount" name="Transactions" unit="" label={{ value: 'จำนวนครั้งที่ซื้อ', position: 'bottom', offset: 0 }} />
+                <YAxis type="number" dataKey="totalAmount" name="Total Spend" unit="฿" label={{ value: 'ยอดซื้อรวม', angle: -90, position: 'insideLeft' }} />
                 <ZAxis type="number" range={[60, 60]} />
                 <Tooltip cursor={{ strokeDasharray: '3 3' }} 
                   content={({ active, payload }) => {
                     if (active && payload && payload.length) {
                       const d = payload[0].payload;
                       return (
-                        <div className="bg-white p-3 border shadow-lg rounded text-sm">
-                          <p className="font-bold mb-1">BA: {d.baId}</p>
-                          <p>Cluster: <span style={{color: d.clusterColor}}>{d.clusterName}</span></p>
-                          <p>Spend: ฿{d.totalAmount.toLocaleString()}</p>
-                          <p>Txns: {d.transactionCount}</p>
+                        <div className="bg-white p-3 border shadow-lg rounded text-sm z-50">
+                          <p className="font-bold mb-1 text-gray-800">BA: {d.baId}</p>
+                          <p className="text-gray-600">กลุ่ม: <span style={{color: d.clusterColor, fontWeight: 'bold'}}>{d.clusterName}</span></p>
+                          <p className="text-gray-600">ยอดรวม: <span className="font-mono text-gray-900">฿{d.totalAmount.toLocaleString()}</span></p>
+                          <p className="text-gray-600">จำนวนบิล: <span className="font-mono text-gray-900">{d.transactionCount}</span></p>
                         </div>
                       );
                     }
@@ -95,18 +95,18 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, analysis }) => {
                       fill={cluster.color}
                    />
                 ))}
-                <Legend />
+                <Legend verticalAlign="top" height={36}/>
               </ScatterChart>
             </ResponsiveContainer>
           </div>
-          <p className="text-xs text-center text-gray-400 mt-2">X: Transaction Count | Y: Total Spend amount</p>
+          <p className="text-xs text-center text-gray-400 mt-2">แกน X: จำนวนธุรกรรม | แกน Y: ยอดใช้จ่ายรวม</p>
         </div>
 
         {/* Bar Chart: Average Spend per Cluster */}
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
           <div className="flex items-center gap-2 mb-6">
             <Users className="w-5 h-5 text-indigo-600" />
-            <h3 className="text-lg font-semibold text-gray-800">Cluster Value Comparison</h3>
+            <h3 className="text-lg font-semibold text-gray-800">เปรียบเทียบมูลค่าของแต่ละกลุ่ม</h3>
           </div>
           <div className="h-80">
             <ResponsiveContainer width="100%" height="100%">
@@ -115,10 +115,11 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, analysis }) => {
                 <XAxis dataKey="name" tick={{fontSize: 12}} />
                 <YAxis />
                 <Tooltip 
-                   formatter={(value: number) => `฿${value.toLocaleString(undefined, {maximumFractionDigits: 0})}`}
+                   formatter={(value: number) => [`฿${value.toLocaleString(undefined, {maximumFractionDigits: 0})}`, 'ยอดใช้จ่ายเฉลี่ย']}
                    cursor={{fill: '#f9fafb'}}
+                   contentStyle={{borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'}}
                 />
-                <Bar dataKey="avgTotalSpend" name="Avg Total Spend" radius={[4, 4, 0, 0]}>
+                <Bar dataKey="avgTotalSpend" name="ยอดใช้จ่ายเฉลี่ย" radius={[4, 4, 0, 0]}>
                   {clusterStats.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
@@ -126,7 +127,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, analysis }) => {
               </BarChart>
             </ResponsiveContainer>
           </div>
-          <p className="text-xs text-center text-gray-400 mt-2">Average Total Spend per BA in each Cluster</p>
+          <p className="text-xs text-center text-gray-400 mt-2">ยอดใช้จ่ายรวมเฉลี่ยต่อคน ในแต่ละกลุ่ม</p>
         </div>
 
       </div>
@@ -134,7 +135,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, analysis }) => {
       {/* Data Table Preview */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="p-4 bg-gray-50 border-b border-gray-100 font-medium text-gray-700 flex justify-between items-center">
-           <span>Sample Data (Top 10 High Spenders)</span>
+           <span>ตัวอย่างข้อมูล (10 อันดับแรก)</span>
            <Sparkles className="w-4 h-4 text-yellow-500" />
         </div>
         <div className="overflow-x-auto">
@@ -142,10 +143,10 @@ export const Dashboard: React.FC<DashboardProps> = ({ data, analysis }) => {
             <thead className="text-xs text-gray-700 uppercase bg-gray-50">
               <tr>
                 <th className="px-6 py-3">BA ID</th>
-                <th className="px-6 py-3">Cluster</th>
-                <th className="px-6 py-3 text-right">Total Spend</th>
-                <th className="px-6 py-3 text-right">Txn Count</th>
-                <th className="px-6 py-3 text-right">Avg Spend</th>
+                <th className="px-6 py-3">กลุ่ม (Cluster)</th>
+                <th className="px-6 py-3 text-right">ยอดซื้อรวม</th>
+                <th className="px-6 py-3 text-right">จำนวนบิล</th>
+                <th className="px-6 py-3 text-right">ยอดเฉลี่ย/บิล</th>
               </tr>
             </thead>
             <tbody>

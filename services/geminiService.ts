@@ -30,6 +30,11 @@ export const analyzeClusters = async (data: BaAggregatedData[]): Promise<Analysi
     1. Identify 3 distinct clusters/segments based on their spending behavior (e.g., High Value, Frequent Small Spenders, Churn Risk, etc.).
     2. Assign each BA provided in the list to one of these clusters.
     
+    IMPORTANT: 
+    - Provide the 'name' and 'description' of the clusters in **THAI LANGUAGE** (ภาษาไทย).
+    - The names should be catchy business terms (e.g., "ลูกค้ากระเป๋าหนัก", "ลูกค้าซื้อบ่อยยอดน้อย").
+    - The description should explain the behavior clearly in Thai.
+
     Data:
     ${JSON.stringify(dataToSend)}
   `;
@@ -48,8 +53,8 @@ export const analyzeClusters = async (data: BaAggregatedData[]): Promise<Analysi
             items: {
               type: Type.OBJECT,
               properties: {
-                name: { type: Type.STRING },
-                description: { type: Type.STRING },
+                name: { type: Type.STRING, description: "Name in Thai" },
+                description: { type: Type.STRING, description: "Description in Thai" },
                 color: { type: Type.STRING, description: "A hex color code suitable for charts (e.g., #FF5733)" }
               },
               required: ["name", "description", "color"]

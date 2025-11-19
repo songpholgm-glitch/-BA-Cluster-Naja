@@ -1,1 +1,3 @@
+# API Key สำหรับ Google Gemini
+# รับ Key ได้ที่ https://aistudio.google.com/
 API_KEY
