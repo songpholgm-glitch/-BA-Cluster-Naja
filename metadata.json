@@ -1,0 +1,5 @@
+{
+  "name": "BA Cluster Genius",
+  "description": "AI-powered Business Associate clustering using CSV data and Gemini 2.5 Flash model.",
+  "requestFramePermissions": []
+}
